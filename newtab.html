@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Momentum</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="todo.js" defer></script>
+  <script src="clocks.js" defer></script>
+  <script src="background.js" defer></script>
+</head>
+<body>
+  <main>
+    <section class="clocks" aria-label="Portugal and Germany time">
+      <div class="card clock">
+        <h2>Portugal</h2>
+        <p>Lisbon</p>
+        <time id="portugal-time">--:--</time>
+      </div>
+      <div class="card clock">
+        <h2>Germany</h2>
+        <p>Berlin</p>
+        <time id="germany-time">--:--</time>
+      </div>
+    </section>
+    <section class="card" aria-labelledby="todo-title">
+      <h1 id="todo-title">My to-do list</h1>
+      <p>Put your most important tasks at the top.</p>
+      <form id="task-form">
+        <label for="task-input">New task</label>
+        <div class="input-row">
+          <input id="task-input" type="text" placeholder="What do you need to do?" maxlength="200" required>
+          <button type="submit">Add</button>
+        </div>
+      </form>
+      <p id="message" role="status"></p>
+      <p id="empty-message">No tasks yet. Add your first task above.</p>
+      <ol id="task-list"></ol>
+    </section>
+    <details class="card photo-library">
+      <summary>Background photos</summary>
+      <p>Upload up to 10 photos. Each new tab picks one at random.</p>
+      <label for="photo-input">Add photos (JPEG, PNG, WebP; up to 10 MB each)</label>
+      <input id="photo-input" type="file" accept="image/jpeg,image/png,image/webp" multiple disabled>
+      <p id="photo-status" role="status">Loading your library…</p>
+      <div id="photo-gallery"></div>
+    </details>
+  </main>
+</body>
+</html>
