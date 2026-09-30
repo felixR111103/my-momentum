@@ -66,3 +66,7 @@ li { padding: 12px 0; border-bottom: 1px solid #e1e7ee; }
   main { margin: 16px auto; }
   .card { padding: 20px; }
 }
+
+.drag-handle { cursor: grab; touch-action: none; user-select: none; font-size: 22px; padding: 4px 10px; }
+.dragging { background: #e4edfc; border-radius: 6px; box-shadow: 0 0 0 2px #3976d5; }
+.dragging .drag-handle { cursor: grabbing; }

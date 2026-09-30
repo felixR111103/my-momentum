@@ -2,6 +2,7 @@
 // Its position in this array is its rank.
 const STORAGE_KEY = "my-momentum-tasks";
 let tasks = [];
+let activeDrag = null;
 
 const form = document.querySelector("#task-form");
 const input = document.querySelector("#task-input");
@@ -41,15 +42,79 @@ function saveTasks(updatedTasks) {
   }
 }
 
-function moveTask(index, direction) {
-  const newIndex = index + direction;
-  if (newIndex < 0 || newIndex >= tasks.length) return;
+function focusHandle(id) {
+  const item = [...list.children].find(item => item.dataset.taskId === id);
+  item?.querySelector(".drag-handle")?.focus();
+}
 
+function moveTask(id, direction) {
+  const index = tasks.findIndex(task => task.id === id);
+  const newIndex = index + direction;
+  if (index < 0 || newIndex < 0 || newIndex >= tasks.length) return;
   const reorderedTasks = [...tasks];
   [reorderedTasks[index], reorderedTasks[newIndex]] =
     [reorderedTasks[newIndex], reorderedTasks[index]];
-  saveTasks(reorderedTasks);
+  if (saveTasks(reorderedTasks)) {
+    message.textContent = `Moved task to position ${newIndex + 1} of ${tasks.length}.`;
+  }
+  focusHandle(id);
 }
+
+// Preview the order in the DOM; persist only when the handle is released.
+function startDrag(event, task, item, handle) {
+  if (event.button !== 0 || tasks.length < 2 || activeDrag) return;
+  event.preventDefault();
+  handle.focus();
+  handle.setPointerCapture(event.pointerId);
+  activeDrag = { id: task.id, item, handle, pointerId: event.pointerId };
+  item.classList.add("dragging");
+}
+
+function finishDrag(cancelled = false) {
+  if (!activeDrag) return;
+  const { id, handle, pointerId } = activeDrag;
+  const ids = [...list.children].map(item => item.dataset.taskId);
+  activeDrag = null;
+  if (handle.hasPointerCapture(pointerId)) handle.releasePointerCapture(pointerId);
+  if (!cancelled && ids.some((id, index) => id !== tasks[index].id)) {
+    const byId = new Map(tasks.map(task => [task.id, task]));
+    if (saveTasks(ids.map(id => byId.get(id)))) {
+      message.textContent = `Moved task to position ${ids.indexOf(id) + 1} of ${tasks.length}.`;
+    }
+  } else {
+    renderTasks();
+  }
+  focusHandle(id);
+}
+
+list.addEventListener("pointermove", event => {
+  if (!activeDrag || event.pointerId !== activeDrag.pointerId) return;
+  event.preventDefault();
+  const { item } = activeDrag;
+  const following = [...list.children].find(candidate => {
+    if (candidate === item) return false;
+    const bounds = candidate.getBoundingClientRect();
+    return event.clientY < bounds.top + bounds.height / 2;
+  });
+  if (item.nextElementSibling !== (following || null)) {
+    list.insertBefore(item, following || null);
+    // Moving the row can release capture; retain it for the rest of the drag.
+    activeDrag.handle.setPointerCapture(event.pointerId);
+  }
+  if (event.clientY < 60) window.scrollBy(0, -20);
+  else if (event.clientY > window.innerHeight - 60) window.scrollBy(0, 20);
+});
+list.addEventListener("pointerup", event => {
+  if (event.pointerId === activeDrag?.pointerId) finishDrag();
+});
+list.addEventListener("pointercancel", () => finishDrag(true));
+list.addEventListener("lostpointercapture", () => finishDrag(true));
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && activeDrag) {
+    event.preventDefault();
+    finishDrag(true);
+  }
+});
 
 function createButton(text, description, action, disabled = false) {
   const button = document.createElement("button");
@@ -112,13 +177,28 @@ function editTask(task, row) {
 }
 
 function renderTasks() {
+  // A refresh (including changes from another tab) cancels any pending drag.
+  activeDrag = null;
   list.replaceChildren();
   emptyMessage.hidden = tasks.length > 0;
 
-  tasks.forEach((task, index) => {
+  tasks.forEach(task => {
     const item = document.createElement("li");
+    item.dataset.taskId = task.id;
     const row = document.createElement("div");
     row.className = "task-row";
+
+    const handle = createButton("⠿", `Reorder ${task.text}`, () => {});
+    handle.className = "drag-handle";
+    handle.title = "Drag to reorder, or use the up and down arrow keys";
+    handle.setAttribute("aria-describedby", "reorder-help");
+    handle.addEventListener("pointerdown", event => startDrag(event, task, item, handle));
+    handle.addEventListener("keydown", event => {
+      if (!activeDrag && (event.key === "ArrowUp" || event.key === "ArrowDown")) {
+        event.preventDefault();
+        moveTask(task.id, event.key === "ArrowUp" ? -1 : 1);
+      }
+    });
 
     const label = document.createElement("label");
     label.className = task.completed ? "task-label completed" : "task-label";
@@ -141,14 +221,12 @@ function renderTasks() {
     actions.className = "task-actions";
     actions.append(
       createButton("Edit", `Edit ${task.text}`, () => editTask(task, row)),
-      createButton("↑", `Move ${task.text} up`, () => moveTask(index, -1), index === 0),
-      createButton("↓", `Move ${task.text} down`, () => moveTask(index, 1), index === tasks.length - 1),
       createButton("Delete", `Delete ${task.text}`, () => {
         saveTasks(tasks.filter(current => current.id !== task.id));
       })
     );
 
-    row.append(label, actions);
+    row.append(handle, label, actions);
     item.append(row);
     list.append(item);
   });
