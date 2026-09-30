@@ -13,8 +13,17 @@ const clocks = [
   })
 }));
 
+// The greeting follows Lisbon time, regardless of the computer's time zone.
+const greetingHour = new Intl.DateTimeFormat("en-GB", {
+  timeZone: "Europe/Lisbon", hour: "2-digit", hourCycle: "h23"
+});
+
 function updateClocks() {
   const now = new Date();
+  const hour = Number(greetingHour.format(now));
+  const greeting = hour >= 5 && hour < 12 ? "Good Morning"
+    : hour >= 12 && hour < 18 ? "Good Afternoon" : "Good Night";
+  document.getElementById("greeting-text").textContent = `${greeting} Felix`;
   clocks.forEach(clock => {
     clock.element.textContent = clock.formatter.format(now);
     clock.element.dateTime = now.toISOString();
