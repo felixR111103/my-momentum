@@ -1,103 +1,160 @@
-1. To-do list
+# My Momentum — Product Requirements
 
-Manage and rank my tasks directly on the dashboard.
+**Product:** Chrome new-tab productivity dashboard
 
-Acceptance criteria — implemented:
+**Status:** Current features implemented
 
-My to-do list is visible on the dashboard.
+**Product goal:** Help the user begin each new tab with a clear daily focus,
+their most important tasks, useful world clocks, and a personal visual backdrop.
 
-I can add a task.
+## 1. Personalized greeting
 
-I can edit a task and save or cancel my changes.
+Show a personal, time-aware greeting at the top of the dashboard.
 
-I can mark a task as finished and undo this.
+### Acceptance criteria — implemented
 
-I can delete a task.
+- The greeting displays the user's saved name.
+- The user can change their name in the personalization settings.
+- The user can select the timezone used to determine the greeting.
+- The user can choose a Friendly, Motivational, or Simple greeting style.
+- The greeting changes according to the time of day.
+- Greeting changes appear immediately after settings are saved.
+- Greeting settings persist locally and synchronize across open dashboard tabs.
 
-I can rank tasks using drag-and-drop or keyboard arrow keys.
+## 2. Configurable world clocks
 
-Tasks, their order, and completion status are saved locally.
+Show the current time in two locations selected by the user.
 
-Empty tasks cannot be added.
+### Acceptance criteria — implemented
 
-Tasks can have High, Medium, or Low priority and an optional due date.
+- Two clocks are displayed at the top of the dashboard.
+- The default clocks show Lisbon, Portugal and Berlin, Germany.
+- The left and right clocks can be configured independently.
+- Available choices include major European, American, Asian, Australian, UTC,
+  and device-local timezones.
+- Each clock updates its country and city label when its timezone changes.
+- Both clocks use a 24-hour format.
+- Both clocks update automatically every second.
+- Named timezones handle daylight-saving changes automatically.
+- The clocks refresh when the user returns to a previously inactive tab.
 
-The dashboard shows progress and the first three unfinished ranked tasks.
+## 3. Daily focus
 
-Less-important and completed tasks can be expanded on demand.
+Keep one clear intention visible without adding more controls to the main dashboard.
 
-2. Configurable world clocks
+### Acceptance criteria — implemented
 
-Show the time in two places I choose.
+- A compact focus sentence appears directly beneath the clocks.
+- The sentence uses the format “Today's main focus is: [focus].”
+- When no focus is saved, the sentence displays “Not set yet.”
+- Focus-editing controls are located at the bottom of the page.
+- The user can save, edit, or clear today's focus.
+- The focus is associated with the current calendar date.
+- A previous day's focus is not displayed as today's focus.
+- Focus changes persist locally and synchronize across open dashboard tabs.
 
-Acceptance criteria — implemented:
+## 4. Ranked task management
 
-Two clocks are labelled “Portugal” and “Germany.”
+Help the user capture, prioritize, rank, and complete tasks from the new-tab page.
 
-Portugal uses Lisbon time.
+### Acceptance criteria — implemented
 
-Germany uses Berlin time.
+- The current task list appears above the new-task fields.
+- The user can add a task of up to 200 characters.
+- Empty or spaces-only tasks cannot be added.
+- The user can edit a task and save or cancel the change.
+- The user can delete a task.
+- The user can mark a task as completed and undo completion.
+- Completed tasks are visually quieter and use strikethrough text.
+- Each task can have High, Medium, or Low priority.
+- Each task can have an optional due date.
+- Overdue unfinished tasks are identified visually.
+- The user can rank tasks by dragging the reorder handle.
+- The user can rank tasks with the keyboard's up and down arrow keys.
+- Pressing Escape during a pointer drag cancels the change.
+- The focused view shows the first three unfinished tasks in ranked order.
+- Less-important and completed tasks can be expanded with a Show More control.
+- Task text, order, priority, due date, and completion state persist locally.
+- Task changes synchronize across open dashboard tabs.
+- Older saved tasks are migrated to the current task format without data loss.
 
-Both clocks display time in 24-hour format.
+## 5. Progress and daily summary
 
-Both clocks update automatically.
+Show useful progress without turning the dashboard into a complex analytics tool.
 
-Both clocks handle daylight saving automatically.
+### Acceptance criteria — implemented
 
-I can independently change the timezone shown by each clock.
+- The task section shows completed tasks as a fraction of all tasks.
+- The dashboard shows how many tasks remain.
+- Tasks completed on the current day are counted in the daily summary.
+- The summary updates when a task is completed, reopened, added, or deleted.
+- When every task is complete, the dashboard communicates that state.
 
-3. Personal background library
+## 6. Personal background library
 
-Upload my own photos and use them as random backgrounds.
+Allow the user to personalize the dashboard with locally stored photos.
 
-Acceptance criteria — implemented:
+### Acceptance criteria — implemented
 
-I can upload and store up to 10 photos.
+- The user can upload and store up to 10 photos.
+- JPEG, PNG, and WebP images are accepted.
+- Each uploaded file can be up to 10 MB.
+- The extension checks that each selected file is a readable image before saving it.
+- Multiple valid images can be uploaded together.
+- A random saved photo is selected whenever a new dashboard page opens.
+- The same photo may be selected again by chance.
+- The current background remains stable while the library is being managed.
+- The user can see previews and filenames for saved photos.
+- The user can remove photos and upload replacements.
+- The user can adjust the background-photo darkness from 0% to 70%.
+- The dashboard works before any photos have been uploaded.
+- Photos persist locally between browser restarts.
 
-The library accepts JPG, PNG, and WebP images up to 10 MB each.
+## 7. Appearance and responsive behavior
 
-Each new tab randomly selects a photo from my saved library.
+Keep content readable while allowing the selected background to remain visible.
 
-The same photo may appear again by chance.
+### Acceptance criteria — implemented
 
-I can see previews of my saved photos.
+- The dashboard uses a dark gradient when no photo is selected.
+- Cards, inputs, dropdowns, and secondary controls are translucent.
+- Dashboard panels use background blur, rounded corners, and subtle shadows.
+- Text remains opaque and readable above translucent surfaces.
+- The daily-focus sentence appears in a compact panel matching the dashboard style.
+- High, Medium, and Low priorities have distinct visual treatments.
+- Completed tasks are visually quieter than active tasks.
+- Adding, completing, and reordering tasks uses subtle animation.
+- Animations are effectively disabled when reduced motion is requested.
+- The layout adapts for tablet and mobile screen widths.
+- Task actions and forms remain usable on narrow screens.
 
-I can remove photos and upload replacements.
+## 8. Accessibility and keyboard use
 
-Photos are stored locally, so they do not need to be uploaded each time.
+Ensure that core dashboard actions do not depend on pointer input alone.
 
-The dashboard works before I upload any photos.
+### Acceptance criteria — implemented
 
-4. Appearance
+- Form controls have visible or assistive labels.
+- Interactive elements have visible keyboard focus indicators.
+- Task reordering is available through the keyboard.
+- Status and error messages use live status regions where appropriate.
+- Task checkboxes are associated with their task text.
+- Buttons that require additional context have descriptive accessible names.
+- Uploaded-image previews include alternative text.
+- Reduced-motion preferences are respected.
 
-Keep the dashboard readable while showing my background photo.
+## 9. Storage, privacy, and reliability
 
-Acceptance criteria — implemented:
+Keep the extension private, local, and usable without an account or network service.
 
-The clocks appear above the to-do list.
+### Acceptance criteria — implemented
 
-The dashboard panels are translucent and keep their text fully opaque.
-
-Text remains fully opaque.
-
-Dark text and mostly white panels improve readability.
-
-The dashboard uses a dark background when no photo is selected.
-
-The photo overlay strength is configurable.
-
-5. Personalization and daily focus
-
-Acceptance criteria — implemented:
-
-I can configure my name, greeting timezone, and greeting style.
-
-My settings persist locally and update open dashboard tabs.
-
-I can save one main focus for the current day.
-
-Only the focus sentence appears beneath the clocks; editing controls are kept at
-the bottom of the page.
-
-I can see how many tasks I completed today and how many remain.
-
+- Tasks, focus, and settings are stored in the current Chrome profile using
+  `localStorage`.
+- Photo files are stored locally using IndexedDB.
+- User content is not uploaded to an external server.
+- The extension does not require an account.
+- The extension makes no external API calls.
+- The manifest requests no additional Chrome permissions.
+- Storage and image-processing failures display understandable error messages.
+- The extension uses plain HTML, CSS, and JavaScript with no packages or build step.
