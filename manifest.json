@@ -2,6 +2,6 @@
   "manifest_version": 3,
   "name": "My Momentum",
   "version": "1.0.0",
-  "description": "A simple personal to-do list on every new tab.",
+  "description": "A private new-tab dashboard for daily focus, ranked tasks, world clocks, and personal backgrounds.",
   "chrome_url_overrides": { "newtab": "newtab.html" }
 }

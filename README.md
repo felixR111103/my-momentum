@@ -129,6 +129,7 @@ my-momentum/
 ├── newtab.html
 ├── README.md
 ├── PM.md
+├── AUDIT.md
 ├── docs/
 │   └── my-momentum-dashboard.jpeg
 └── src/
@@ -147,6 +148,7 @@ my-momentum/
 - `src/features/` separates the JavaScript by user-facing feature.
 - `src/styles/newtab.css` contains the responsive design and animations.
 - `PM.md` records the current product requirements and acceptance criteria.
+- `AUDIT.md` records the sanitized public-repository review and remaining limitations.
 
 ## Learning
 

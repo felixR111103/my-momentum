@@ -1,1 +1,15 @@
 .DS_Store
+Thumbs.db
+
+# Local editor settings
+.idea/
+.vscode/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Logs and dependency folders
+*.log
+node_modules/
