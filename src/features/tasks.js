@@ -1,7 +1,6 @@
 // The array order is the user's ranking. The first three unfinished tasks are
 // the focused dashboard view; the rest remain available behind "Show all".
 const STORAGE_KEY = "my-momentum-tasks";
-const FOCUS_KEY = "my-momentum-daily-focus";
 const priorities = new Set(["high", "medium", "low"]);
 let tasks = [];
 let activeDrag = null;
@@ -18,11 +17,6 @@ const message = document.querySelector("#message");
 const progress = document.querySelector("#task-progress");
 const dailySummary = document.querySelector("#daily-summary");
 const toggleTasks = document.querySelector("#toggle-tasks");
-const focusForm = document.querySelector("#focus-form");
-const focusInput = document.querySelector("#focus-input");
-const focusStatus = document.querySelector("#focus-status");
-const focusText = document.querySelector("#focus-text");
-const clearFocus = document.querySelector("#clear-focus");
 
 function localDateKey(date = new Date()) {
   const year = date.getFullYear();
@@ -74,47 +68,6 @@ function saveTasks(updatedTasks, nextAnimation = null) {
     return false;
   }
 }
-
-function loadDailyFocus() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(FOCUS_KEY) || "null");
-    const text = saved?.date === localDateKey() && typeof saved.text === "string"
-      ? saved.text : "";
-    showDailyFocus(text);
-  } catch {
-    showDailyFocus("");
-    focusStatus.textContent = "Your daily focus could not be loaded.";
-  }
-}
-
-function showDailyFocus(text) {
-  focusStatus.textContent = "";
-  focusInput.value = text;
-  focusText.textContent = text || "Not set yet";
-}
-
-focusForm.addEventListener("submit", event => {
-  event.preventDefault();
-  const text = focusInput.value.trim();
-  try {
-    localStorage.setItem(FOCUS_KEY, JSON.stringify({ date: localDateKey(), text }));
-    showDailyFocus(text);
-    focusStatus.textContent = text ? "Today's focus is set." : "Today's focus was cleared.";
-  } catch {
-    focusStatus.textContent = "Your daily focus could not be saved.";
-  }
-});
-
-clearFocus.addEventListener("click", () => {
-  try {
-    localStorage.removeItem(FOCUS_KEY);
-    showDailyFocus("");
-    focusStatus.textContent = "Today's focus was cleared.";
-    focusInput.focus();
-  } catch {
-    focusStatus.textContent = "Your daily focus could not be cleared.";
-  }
-});
 
 function visibleTasks() {
   return showAllTasks ? tasks : tasks.filter(task => !task.completed).slice(0, 3);
@@ -396,12 +349,5 @@ form.addEventListener("submit", event => {
 
 window.addEventListener("storage", event => {
   if (event.key === STORAGE_KEY || event.key === null) loadTasks();
-  if (event.key === FOCUS_KEY || event.key === null) loadDailyFocus();
 });
-
-document.addEventListener("visibilitychange", () => {
-  if (!document.hidden) loadDailyFocus();
-});
-
-loadDailyFocus();
 loadTasks();

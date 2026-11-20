@@ -58,11 +58,12 @@ After editing the extension, reload it on `chrome://extensions` and open a fresh
 
 - `manifest.json` registers the Chrome new-tab override.
 - `newtab.html` defines the dashboard structure.
-- `styles.css` contains the responsive visual system and animations.
-- `todo.js` manages tasks, progress, ranking, and daily focus.
-- `settings.js` manages personalization and photo-darkness preferences.
-- `clocks.js` manages the clocks and personalized greeting.
-- `background.js` manages the local photo library and random background.
+- `src/styles/newtab.css` contains the responsive visual system and animations.
+- `src/features/tasks.js` manages tasks, progress, and ranking.
+- `src/features/focus.js` manages the current day's main focus.
+- `src/features/settings.js` manages personalization and photo-darkness preferences.
+- `src/features/clocks.js` manages the clocks and personalized greeting.
+- `src/features/backgrounds.js` manages the local photo library and random background.
 - `PM.md` records the product requirements.
 
 ## Manual acceptance checks
