@@ -70,8 +70,9 @@ async function showPhotoLibrary() {
   let selected = photos.findIndex(photo => photo.id === currentPhotoId);
   if (selected === -1 && photos.length) selected = Math.floor(Math.random() * photos.length);
   currentPhotoId = photos[selected]?.id;
-  document.body.style.backgroundImage = selected === -1 ? "none"
-    : `linear-gradient(#00000033, #00000033), url("${photoUrls[selected]}")`;
+  document.body.classList.toggle("has-background", selected !== -1);
+  document.body.style.backgroundImage = selected === -1 ? ""
+    : `linear-gradient(rgb(8 17 31 / var(--overlay-opacity)), rgb(8 17 31 / var(--overlay-opacity))), url("${photoUrls[selected]}")`;
 
   photos.forEach((photo, index) => {
     const preview = document.createElement("figure");

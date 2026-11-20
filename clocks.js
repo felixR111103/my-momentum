@@ -1,30 +1,74 @@
 // Named time zones let the browser handle daylight saving automatically.
-// Add another entry here and a matching <time> element to add more clocks.
+const timezoneLabels = {
+  "Europe/Lisbon": ["Portugal", "Lisbon"],
+  "Europe/Berlin": ["Germany", "Berlin"],
+  "Europe/London": ["United Kingdom", "London"],
+  "Europe/Paris": ["France", "Paris"],
+  "Europe/Madrid": ["Spain", "Madrid"],
+  "America/New_York": ["United States", "New York"],
+  "America/Chicago": ["United States", "Chicago"],
+  "America/Los_Angeles": ["United States", "Los Angeles"],
+  "America/Sao_Paulo": ["Brazil", "São Paulo"],
+  "Asia/Dubai": ["United Arab Emirates", "Dubai"],
+  "Asia/Kolkata": ["India", "New Delhi"],
+  "Asia/Singapore": ["Singapore", "Singapore"],
+  "Asia/Tokyo": ["Japan", "Tokyo"],
+  "Australia/Sydney": ["Australia", "Sydney"],
+  UTC: ["UTC", "Universal time"],
+  local: ["Device", "Local timezone"]
+};
 const clocks = [
-  { id: "portugal-time", timeZone: "Europe/Lisbon" },
-  { id: "germany-time", timeZone: "Europe/Berlin" }
+  { setting: "clockOne", titleId: "clock-one-title", cityId: "clock-one-city", timeId: "clock-one-time" },
+  { setting: "clockTwo", titleId: "clock-two-title", cityId: "clock-two-city", timeId: "clock-two-time" }
 ].map(clock => ({
-  element: document.getElementById(clock.id),
-  formatter: new Intl.DateTimeFormat("en-GB", {
-    timeZone: clock.timeZone,
-    hour: "2-digit",
-    minute: "2-digit",
-    hourCycle: "h23"
-  })
+  ...clock,
+  title: document.getElementById(clock.titleId),
+  city: document.getElementById(clock.cityId),
+  element: document.getElementById(clock.timeId),
+  timezone: null,
+  formatter: null
 }));
 
-// The greeting follows Lisbon time, regardless of the computer's time zone.
-const greetingHour = new Intl.DateTimeFormat("en-GB", {
-  timeZone: "Europe/Lisbon", hour: "2-digit", hourCycle: "h23"
-});
+function configureClock(clock, timezone) {
+  if (clock.timezone === timezone) return;
+  const options = { hour: "2-digit", minute: "2-digit", hourCycle: "h23" };
+  if (timezone !== "local") options.timeZone = timezone;
+  clock.timezone = timezone;
+  clock.formatter = new Intl.DateTimeFormat("en-GB", options);
+  const [title, city] = timezoneLabels[timezone] || ["Custom", timezone];
+  clock.title.textContent = title;
+  clock.city.textContent = city;
+}
+
+function getGreetingHour(now, timezone) {
+  const options = { hour: "2-digit", hourCycle: "h23" };
+  if (timezone !== "local") options.timeZone = timezone;
+  return Number(new Intl.DateTimeFormat("en-GB", options).format(now));
+}
+
+function makeGreeting(hour, name, style) {
+  const timeOfDay = hour >= 5 && hour < 12 ? "morning"
+    : hour >= 12 && hour < 18 ? "afternoon" : "evening";
+  if (style === "simple") return `${name} · ${timeOfDay}`;
+  if (style === "motivational") {
+    const encouragement = timeOfDay === "morning" ? "Let's make today count"
+      : timeOfDay === "afternoon" ? "Keep the momentum going" : "Finish the day strong";
+    return `${encouragement}, ${name}`;
+  }
+  return `Good ${timeOfDay}, ${name}`;
+}
 
 function updateClocks() {
   const now = new Date();
-  const hour = Number(greetingHour.format(now));
-  const greeting = hour >= 5 && hour < 12 ? "Good Morning"
-    : hour >= 12 && hour < 18 ? "Good Afternoon" : "Good Night";
-  document.getElementById("greeting-text").textContent = `${greeting} Felix`;
+  const settings = window.getMomentumSettings?.() || {
+    name: "Felix", timezone: "Europe/Lisbon", greetingStyle: "friendly",
+    clockOne: "Europe/Lisbon", clockTwo: "Europe/Berlin"
+  };
+  const hour = getGreetingHour(now, settings.timezone);
+  document.getElementById("greeting-text").textContent =
+    makeGreeting(hour, settings.name, settings.greetingStyle);
   clocks.forEach(clock => {
+    configureClock(clock, settings[clock.setting]);
     clock.element.textContent = clock.formatter.format(now);
     clock.element.dateTime = now.toISOString();
   });
@@ -37,3 +81,5 @@ setInterval(updateClocks, 1000);
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) updateClocks();
 });
+
+window.addEventListener("momentum-settings-changed", updateClocks);

@@ -6,6 +6,7 @@
   <title>My Momentum</title>
   <link rel="stylesheet" href="styles.css">
   <script src="todo.js" defer></script>
+  <script src="settings.js" defer></script>
   <script src="clocks.js" defer></script>
   <script src="background.js" defer></script>
 </head>
@@ -14,32 +15,80 @@
     <header class="greeting">
       <h1 id="greeting-text">Hello Felix</h1>
     </header>
-    <section class="clocks" aria-label="Portugal and Germany time">
+    <section class="clocks" aria-label="World clocks">
       <div class="card clock">
-        <h2>Portugal</h2>
-        <p>Lisbon</p>
-        <time id="portugal-time">--:--</time>
+        <h2 id="clock-one-title">Portugal</h2>
+        <p id="clock-one-city">Lisbon</p>
+        <time id="clock-one-time">--:--</time>
       </div>
       <div class="card clock">
-        <h2>Germany</h2>
-        <p>Berlin</p>
-        <time id="germany-time">--:--</time>
+        <h2 id="clock-two-title">Germany</h2>
+        <p id="clock-two-city">Berlin</p>
+        <time id="clock-two-time">--:--</time>
       </div>
     </section>
-    <section class="card" aria-labelledby="todo-title">
-      <h2 id="todo-title">My to-do list</h2>
-      <p id="reorder-help">Drag the ⠿ handle to reorder tasks. You can also focus the handle and use the up and down arrow keys.</p>
+    <section id="focus-display" class="focus-display" aria-labelledby="focus-title">
+      <p id="focus-title">Today's main focus is: <strong id="focus-text">Not set yet</strong></p>
+    </section>
+    <section class="card task-card" aria-labelledby="todo-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Your priorities</p>
+          <h2 id="todo-title">Top tasks</h2>
+        </div>
+        <div class="summary-stack">
+          <p id="task-progress" class="summary-pill">0 of 0 completed</p>
+          <p id="daily-summary" class="summary-pill">Start with one clear intention.</p>
+        </div>
+      </div>
+      <p id="reorder-help">Your first three unfinished tasks are shown. Drag the ⠿ handle to rank them, or focus it and use the arrow keys.</p>
+      <p id="empty-message">No tasks yet. Add your first task below.</p>
+      <ol id="task-list"></ol>
+      <button id="toggle-tasks" class="secondary-action" type="button" hidden>Show all tasks</button>
       <form id="task-form">
         <label for="task-input">New task</label>
-        <div class="input-row">
+        <div class="task-fields">
           <input id="task-input" type="text" placeholder="What do you need to do?" maxlength="200" required>
+          <label>
+            <span>Priority</span>
+            <select id="task-priority">
+              <option value="high">High</option>
+              <option value="medium" selected>Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </label>
+          <label>
+            <span>Due date <small>(optional)</small></span>
+            <input id="task-due-date" type="date">
+          </label>
           <button type="submit">Add</button>
         </div>
       </form>
       <p id="message" role="status"></p>
-      <p id="empty-message">No tasks yet. Add your first task above.</p>
-      <ol id="task-list"></ol>
     </section>
+    <details class="card settings-card">
+      <summary>Personalize dashboard</summary>
+      <form id="settings-form" class="settings-grid">
+        <label for="setting-name">Your name</label>
+        <input id="setting-name" type="text" maxlength="40" required>
+        <label for="setting-timezone">Greeting timezone</label>
+        <select id="setting-timezone" class="timezone-select"></select>
+        <label for="setting-greeting-style">Greeting style</label>
+        <select id="setting-greeting-style">
+          <option value="friendly">Friendly</option>
+          <option value="motivational">Motivational</option>
+          <option value="simple">Simple</option>
+        </select>
+        <label for="setting-clock-one">Left clock</label>
+        <select id="setting-clock-one" class="timezone-select"></select>
+        <label for="setting-clock-two">Right clock</label>
+        <select id="setting-clock-two" class="timezone-select"></select>
+        <label for="setting-overlay">Photo darkness: <output id="overlay-value">35%</output></label>
+        <input id="setting-overlay" type="range" min="0" max="70" step="5" value="35">
+        <button type="submit">Save settings</button>
+        <p id="settings-status" role="status"></p>
+      </form>
+    </details>
     <details class="card photo-library">
       <summary>Background photos</summary>
       <p>Upload up to 10 photos. Each new tab picks one at random.</p>
@@ -48,6 +97,18 @@
       <p id="photo-status" role="status">Loading your library…</p>
       <div id="photo-gallery"></div>
     </details>
+    <section class="card focus-settings" aria-labelledby="focus-settings-title">
+      <p class="eyebrow">Settings</p>
+      <h2 id="focus-settings-title">Daily focus</h2>
+      <p>Edit or clear the focus sentence shown beneath your clocks.</p>
+      <form id="focus-form" class="focus-form">
+        <label class="visually-hidden" for="focus-input">Main focus for today</label>
+        <input id="focus-input" type="text" maxlength="160" placeholder="For example: Studying">
+        <button type="submit">Save focus</button>
+        <button id="clear-focus" type="button">Clear</button>
+      </form>
+      <p id="focus-status" role="status"></p>
+    </section>
   </main>
 </body>
 </html>
